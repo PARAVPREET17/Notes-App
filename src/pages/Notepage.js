@@ -14,7 +14,7 @@ const Notepage = () => {
     
     let getNote = async () => {
     if(noteId==='new')return
-    let response = await fetch(`http://localhost:8000/notes/${noteId}`);
+    let response = await fetch(`/api/notes/${noteId}`);
     let data = await response.json();
     setNote(data);
   };
@@ -23,27 +23,27 @@ const Notepage = () => {
 
 
   let createNote = async () => {
-    await fetch(`http://localhost:8000/notes/`, {
+    await fetch(`/api/notes/create/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...note, 'updated': new Date() }),
     });
   };
-
+  
   let updateNote = async () => {
-    await fetch(`http://localhost:8000/notes/${noteId}`, {
+    await fetch(`/api/notes/${noteId}/update/`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
+      // The spread operator is a JavaScript concept. It basically allows you to copy over all the data from an JavaScript object (dictionary in python) to another object
       body: JSON.stringify({ ...note, 'updated': new Date() }),
     });
   };
 
   let deleteNote = async () => {
-    await fetch(`http://localhost:8000/notes/${noteId}`, {
+    await fetch(`/api/notes/${noteId}/delete`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(note),
-    });
+         });
     navigate("/");
   };
 
@@ -59,6 +59,10 @@ const Notepage = () => {
  
     navigate("/");
   };
+
+  let handleChange=(value)=>{
+    setNote(note=>({ ...note, 'body': value }));
+  }
 
   return (
     <div className="note">
@@ -78,7 +82,7 @@ const Notepage = () => {
       </div>
       <textarea
         onChange={(e) => {
-          setNote({ ...note, 'body': e.target.value })
+          handleChange(e.target.value)
         }} placeholder="Edit note"
         value={note?.body}
       ></textarea>
